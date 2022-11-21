@@ -52,6 +52,11 @@ public class PlayerController : MonoBehaviour
                 case MovementState.Run:
                     if (_movementState == MovementState.ADS)
                         return;
+                    if (_actionState == ActionState.Fire)
+                    {
+                        MoveState = MovementState.Jog;
+                        return;
+                    }
                     break;
                 case MovementState.ADS:
                     if (_movementState == MovementState.Run)
@@ -71,7 +76,7 @@ public class PlayerController : MonoBehaviour
                 case ActionState.None:
                     break;
                 case ActionState.Fire:
-                    if (_actionState == ActionState.Reload)
+                    if (_actionState == ActionState.Reload || _movementState = MovementState.Run)
                         return;
                     break;
                 case ActionState.Reload:
