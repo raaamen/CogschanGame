@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     private ActionState _actionState;
     private Rigidbody rb;
     private Collider hitbox;
-    private InputMappings inputMappings;
+    private InputMapping inputMappings;
 
     public Gun Gun;
 
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        inputMappings = new InputMappings();
+        inputMappings = new InputMapping();
         inputMappings.Enable();
 
         //inputMappings.Movement.Jump.performed += _ => return;   // TODO: Implement Jump.
@@ -96,8 +96,8 @@ public class PlayerController : MonoBehaviour
         inputMappings.Weapon.Reload.performed += _ => ActState = ActionState.Reload; // TODO: End state on reload finish.
         inputMappings.Weapon.Shoot.started += _ => ActState = ActionState.Fire;
         inputMappings.Weapon.Shoot.canceled += _ => ActState = ActionState.None;
-        inputMappings.Weapon.ADS.started += _ => MoveState = MovementState.ADS;
-        inputMappings.Weapon.ADS.canceled += _ => MoveState = MovementState.Jog;
+        inputMappings.Weapon.Aim.started += _ => MoveState = MovementState.ADS;
+        inputMappings.Weapon.Aim.canceled += _ => MoveState = MovementState.Jog;
     }
 
     private void OnEnable()
