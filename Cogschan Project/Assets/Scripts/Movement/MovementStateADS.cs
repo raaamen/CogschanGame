@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementStateADS : MovementState
+public class MovementStateADS : IMovementState
 {
     PlayerController ctrl;
 
@@ -33,9 +33,9 @@ public class MovementStateADS : MovementState
 
     public void HandleStopScope()
     {
-        MovementState s = (MovementState)new MovementStateDefault();
+        /*MovementState s = (MovementState)new MovementStateDefault();
         s.InitController(ctrl);
-        ctrl.SetState(s);
+        ctrl.SetState(s);*/
     }
 
     public void HandleMovement(Vector2 dir)

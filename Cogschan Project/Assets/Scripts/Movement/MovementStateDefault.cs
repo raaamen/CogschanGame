@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementStateDefault : MovementState
+public class MovementStateDefault : IMovementState
 {
     PlayerController ctrl;
 
@@ -28,9 +28,9 @@ public class MovementStateDefault : MovementState
 
     public void HandleStartScope()
     {
-        MovementState s = (MovementState)new MovementStateADS();
+        /*MovementState s = (MovementState)new MovementStateADS();
         s.InitController(ctrl);
-        ctrl.SetState(s);
+        ctrl.SetState(s);*/
     }
 
     public void HandleStopScope()
@@ -50,9 +50,9 @@ public class MovementStateDefault : MovementState
 
     public void HandleStartSprint()
     {
-        MovementState s = (MovementState)new MovementStateRunning();
+        /*MovementState s = (MovementState)new MovementStateRunning();
         s.InitController(ctrl);
-        ctrl.SetState(s);
+        ctrl.SetState(s);*/
     }
 
     public void HandleStopSprint()

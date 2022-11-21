@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface MovementState
+public interface IMovementState
 {
     public void InitController(PlayerController ctrl);
     public void HandleJump();
