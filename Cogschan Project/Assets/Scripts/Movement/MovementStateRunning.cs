@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementStateRunning : MovementState
+public class MovementStateRunning : IMovementState
 {
     PlayerController ctrl;
 
@@ -53,8 +53,8 @@ public class MovementStateRunning : MovementState
 
     public void HandleStopSprint()
     {
-        MovementState s = (MovementState)new MovementStateDefault();
+        /*MovementState s = (MovementState)new MovementStateDefault();
         s.InitController(ctrl);
-        ctrl.SetState(s);
+        ctrl.SetState(s);*/
     }
 }
