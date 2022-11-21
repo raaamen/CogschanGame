@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementStateADS : MovementState
+public class MovementStateRunning : MovementState
 {
-    MovementController ctrl;
+    PlayerController ctrl;
 
-    public void InitController(MovementController ctrl)
+    public void InitController(PlayerController ctrl)
     {
         this.ctrl = ctrl;
     }
 
     public void HandleJump()
     {
-        //Nothing
+        Debug.Log("Run-jumping");
     }
 
     public void HandleLand()
@@ -23,27 +23,27 @@ public class MovementStateADS : MovementState
 
     public void HandleShoot()
     {
-        //Fire current gun with high accuracy
+        //Nothing
     }
 
     public void HandleStartScope()
     {
-        //Nothing, already here
+        //Nothing
     }
 
     public void HandleStopScope()
     {
-        //Go to default state
+        //Nothing
     }
 
-    public void HandleMovement()
+    public void HandleMovement(Vector2 dir)
     {
-        //Move but slowly
+        Debug.Log("Running in the direction " + dir);
     }
 
     public void HandleReload()
     {
-        //Reload
+        //Nothing
     }
 
     public void HandleStartSprint()
@@ -53,6 +53,8 @@ public class MovementStateADS : MovementState
 
     public void HandleStopSprint()
     {
-        //Nothing
+        MovementState s = (MovementState)new MovementStateDefault();
+        s.InitController(ctrl);
+        ctrl.SetState(s);
     }
 }

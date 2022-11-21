@@ -4,31 +4,33 @@ using UnityEngine;
 
 public class MovementStateDefault : MovementState
 {
-    MovementController ctrl;
+    PlayerController ctrl;
 
-    public void InitController(MovementController ctrl)
+    public void InitController(PlayerController ctrl)
     {
         this.ctrl = ctrl;
     }
 
     public void HandleJump()
     {
-        //Jump
+        Debug.Log("Jumping");
     }
 
     public void HandleLand()
     {
-        //Nothing, should already be on land
+        //Nothing
     }
 
     public void HandleShoot()
     {
-        //Fire current gun from hip
+        Debug.Log("Firing from hip");
     }
 
     public void HandleStartScope()
     {
-        //Transition to scope state
+        MovementState s = (MovementState)new MovementStateADS();
+        s.InitController(ctrl);
+        ctrl.SetState(s);
     }
 
     public void HandleStopScope()
@@ -36,19 +38,21 @@ public class MovementStateDefault : MovementState
         //Nothing
     }
 
-    public void HandleMovement()
+    public void HandleMovement(Vector2 dir)
     {
-        //Handle WASD
+        Debug.Log("Jogging in the direction " + dir);
     }
 
     public void HandleReload()
     {
-        //Handles reload
+        Debug.Log("Reloading");
     }
 
     public void HandleStartSprint()
     {
-        //Transition to run state
+        MovementState s = (MovementState)new MovementStateRunning();
+        s.InitController(ctrl);
+        ctrl.SetState(s);
     }
 
     public void HandleStopSprint()

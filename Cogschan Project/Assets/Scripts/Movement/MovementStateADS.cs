@@ -2,48 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementStateDefaultJump : MonoBehaviour
+public class MovementStateADS : MovementState
 {
-    MovementController ctrl;
+    PlayerController ctrl;
 
-    public void InitController(MovementController ctrl)
+    public void InitController(PlayerController ctrl)
     {
         this.ctrl = ctrl;
     }
 
     public void HandleJump()
     {
-        //Nothing (double jump???)
+        //Nothing
     }
 
     public void HandleLand()
     {
-        //Go to default state
+        //Nothing
     }
 
     public void HandleShoot()
     {
-        //Fire current gun from hip
+        Debug.Log("Firing accurately");
     }
 
     public void HandleStartScope()
     {
-        //Transition to scoped jump state
+        //Nothing, already here
     }
 
     public void HandleStopScope()
     {
-        //Nothing
+        MovementState s = (MovementState)new MovementStateDefault();
+        s.InitController(ctrl);
+        ctrl.SetState(s);
     }
 
-    public void HandleMovement()
+    public void HandleMovement(Vector2 dir)
     {
-        //Handle WASD
+        Debug.Log("Slowly creeping in the direction " + dir);
     }
 
     public void HandleReload()
     {
-        //Handles reload
+        Debug.Log("Reloading");
     }
 
     public void HandleStartSprint()

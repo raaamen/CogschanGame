@@ -4,13 +4,13 @@ using UnityEngine;
 
 public interface MovementState
 {
-    public void InitController(MovementController ctrl);
+    public void InitController(PlayerController ctrl);
     public void HandleJump();
     public void HandleLand();
     public void HandleShoot();
     public void HandleStartScope();
     public void HandleStopScope();
-    public void HandleMovement();
+    public void HandleMovement(Vector2 dir);
     public void HandleReload();
     public void HandleStartSprint();
     public void HandleStopSprint();
