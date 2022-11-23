@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
     private Collider hitbox;
     private InputMapping inputMappings;
 
+    private bool inputRun = false;
+    private bool inputFire = false;
+    private bool inputAim = false;
+
     public Gun Gun;
 
     private MovementState MoveState
@@ -91,13 +95,32 @@ public class PlayerController : MonoBehaviour
         inputMappings.Enable();
 
         //inputMappings.Movement.Jump.performed += _ => return;   // TODO: Implement Jump.
-        inputMappings.Movement.Run.started += _ => MoveState = MovementState.Run;
-        inputMappings.Movement.Run.canceled += _ => MoveState = MovementState.Jog;
+        inputMappings.Movement.Run.started += _ => inputRun = true;
+        inputMappings.Movement.Run.canceled += _ => inputRun = false;
         inputMappings.Weapon.Reload.performed += _ => ActState = ActionState.Reload; // TODO: End state on reload finish.
-        inputMappings.Weapon.Shoot.started += _ => ActState = ActionState.Fire;
-        inputMappings.Weapon.Shoot.canceled += _ => ActState = ActionState.None;
-        inputMappings.Weapon.Aim.started += _ => MoveState = MovementState.ADS;
-        inputMappings.Weapon.Aim.canceled += _ => MoveState = MovementState.Jog;
+        inputMappings.Weapon.Shoot.started += _ => inputFire = true;
+        inputMappings.Weapon.Shoot.canceled += _ => inputFire = false;
+        inputMappings.Weapon.Aim.started += _ => inputAim = true;
+        inputMappings.Weapon.Aim.canceled += _ => inputAim = false;
+    }
+
+    // TODO: make this seperate methods?
+    void Update()
+    {
+        if (inputRun)
+            MoveState = MovementState.Run;
+        else if (MoveState == MovementState.Run)
+            MoveState = MovementState.Jog;
+
+        if (inputFire)
+            ActState = ActionState.Fire;
+        else if (ActState == ActionState.Fire)
+            ActState = ActionState.None;
+
+        if (inputAim)
+            MoveState = MovementState.ADS;
+        else if (MoveState == MovementState.ADS)
+            MoveState = MovementState.Jog;
     }
 
     private void OnEnable()
