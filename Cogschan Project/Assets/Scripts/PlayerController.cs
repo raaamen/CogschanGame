@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
         //inputMappings.Movement.Jump.performed += _ => return;   // TODO: Implement Jump.
         inputMappings.Movement.Run.started += _ => inputRun = true;
         inputMappings.Movement.Run.canceled += _ => inputRun = false;
-        inputMappings.Weapon.Reload.performed += _ => ActState = ActionState.Reload; // TODO: End state on reload finish.
+        inputMappings.Weapon.Reload.performed += _ => Gun.Reload();
         inputMappings.Weapon.Shoot.started += _ => inputFire = true;
         inputMappings.Weapon.Shoot.canceled += _ => inputFire = false;
         inputMappings.Weapon.Aim.started += _ => inputAim = true;
@@ -121,6 +121,20 @@ public class PlayerController : MonoBehaviour
             MoveState = MovementState.ADS;
         else if (MoveState == MovementState.ADS)
             MoveState = MovementState.Jog;
+
+        if (Gun.IsReloading)
+            ActState = ActionState.Reload;
+        else if (ActState == ActionState.Reload)
+            ActState = ActionState.None;
+
+        if (ActState == ActionState.Fire)
+        {
+            if (MoveState == MovementState.ADS)
+                Gun.ADSFire();
+            else
+                Gun.HipFire();
+        }
+        Debug.Log($"Movement State: {MoveState}, Action State {ActState}, Ammo Count: {Gun.Ammo}|{Gun.ReserveAmmo}");
     }
 
     private void OnEnable()
@@ -136,6 +150,6 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 dir = inputMappings.Movement.Move.ReadValue<Vector2>();
-        Debug.Log($"Movement State: {MoveState}, Action State {ActState}");
+        
     }
 }
