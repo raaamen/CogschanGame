@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using StarterAssets;
 
 /// <summary>
 /// States for movement.
@@ -42,13 +43,16 @@ public class PlayerController : MonoBehaviour
     private bool inputFire = false;
     private bool inputAim = false;
 
+    private StarterAssetsInputs inputs;
+
     public Gun Gun;
 
+    // Jump is not part of movement states.
     private MovementState MoveState
     {
         get { return _movementState; }
-        set 
-        { 
+        set
+        {
             switch (value)
             {
                 case MovementState.Jog:
@@ -94,7 +98,6 @@ public class PlayerController : MonoBehaviour
         inputMappings = new InputMapping();
         inputMappings.Enable();
 
-        //inputMappings.Movement.Jump.performed += _ => return;   // TODO: Implement Jump.
         inputMappings.Movement.Run.started += _ => inputRun = true;
         inputMappings.Movement.Run.canceled += _ => inputRun = false;
         inputMappings.Weapon.Reload.performed += _ => Gun.Reload();
@@ -102,11 +105,14 @@ public class PlayerController : MonoBehaviour
         inputMappings.Weapon.Shoot.canceled += _ => inputFire = false;
         inputMappings.Weapon.Aim.started += _ => inputAim = true;
         inputMappings.Weapon.Aim.canceled += _ => inputAim = false;
+
+        inputs = GetComponent<StarterAssetsInputs>();
     }
 
     // TODO: make this seperate methods?
     void Update()
     {
+        // Set the movement and action states.
         if (inputRun)
             MoveState = MovementState.Run;
         else if (MoveState == MovementState.Run)
@@ -134,7 +140,13 @@ public class PlayerController : MonoBehaviour
             else
                 Gun.HipFire();
         }
-        Debug.Log($"Movement State: {MoveState}, Action State {ActState}, Ammo Count: {Gun.Ammo}|{Gun.ReserveAmmo}");
+
+        // Use the input and states to interact with the StarterAssestsInputs and the ThirdPersonShooterController.
+        //Debug.Log($"Movement State: {MoveState}, Action State {ActState}, Ammo Count: {Gun.Ammo}|{Gun.ReserveAmmo}");
+        inputs.MoveInput(inputMappings.Movement.Move.ReadValue<Vector2>());
+        inputs.SprintInput(MoveState == MovementState.Run);
+        inputs.AimInput(MoveState == MovementState.ADS);
+
     }
 
     private void OnEnable()
@@ -147,9 +159,10 @@ public class PlayerController : MonoBehaviour
         inputMappings.Disable();
     }
 
+    /* Wasn't really sure why this is here
     private void FixedUpdate()
     {
         Vector2 dir = inputMappings.Movement.Move.ReadValue<Vector2>();
         
-    }
+    }*/
 }
