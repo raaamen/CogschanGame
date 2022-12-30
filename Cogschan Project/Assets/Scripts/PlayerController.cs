@@ -48,10 +48,10 @@ public class PlayerController : MonoBehaviour
     public Gun Gun;
 
     // Jump is not part of movement states.
-    private MovementState MoveState
+    public MovementState MoveState
     {
         get { return _movementState; }
-        set
+        private set
         {
             switch (value)
             {
@@ -69,10 +69,10 @@ public class PlayerController : MonoBehaviour
             _movementState = value;
         }
     }
-    private ActionState ActState
+    public ActionState ActState
     {
         get { return _actionState; }
-        set
+        private set
         {
             switch (value)
             {
