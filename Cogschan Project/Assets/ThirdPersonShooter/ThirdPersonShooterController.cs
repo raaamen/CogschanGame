@@ -15,6 +15,8 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform vfxHitGreen;
     [SerializeField] private Transform vfxHitRed;
 
+    public GameObject particle;
+
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs starterAssetsInputs;
 
@@ -62,7 +64,7 @@ public class ThirdPersonShooterController : MonoBehaviour
                 Hitbox hitbox = hitTransform.GetComponent<Hitbox>();
                 if(hitbox != null)
                 {
-                    //Instantiate(vfxHitGreen, transform.position, Quaternion.identity);
+                    Instantiate(particle, hitTransform.position, Quaternion.identity);
                     //Debug.Log("yes hit!");
                     hitbox.TakeHit(10);
 

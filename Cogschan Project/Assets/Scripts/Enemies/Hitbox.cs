@@ -5,9 +5,10 @@ using UnityEngine;
 public class Hitbox : MonoBehaviour
 {
     public Enemy enemy;
+    public float multiplier = 1f;
 
     public void TakeHit(float damage)
     {
-        enemy.DealDamage(damage);
+        enemy.DealDamage(multiplier * damage);
     }
 }

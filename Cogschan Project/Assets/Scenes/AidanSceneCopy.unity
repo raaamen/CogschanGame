@@ -1240,6 +1240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 1882055092}
+  multiplier: 5
 --- !u!1 &855397193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,6 +1745,7 @@ MonoBehaviour:
   debugTransform: {fileID: 14623233}
   vfxHitGreen: {fileID: 0}
   vfxHitRed: {fileID: 0}
+  particle: {fileID: 9222931191912853214, guid: a0f18980ea1bcc84a9c91285f4980d6c, type: 3}
 --- !u!4 &1731608323 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}
