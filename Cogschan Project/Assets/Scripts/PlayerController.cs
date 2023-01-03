@@ -23,6 +23,7 @@ public enum ActionState
     Fire,
     Reload,
     Dash,
+    Interact,
 }
 
 public class PlayerController : MonoBehaviour
@@ -58,11 +59,11 @@ public class PlayerController : MonoBehaviour
                 case MovementState.Jog:
                     break;
                 case MovementState.Run:
-                    if (_movementState == MovementState.ADS || _actionState == ActionState.Fire)
+                    if (_movementState == MovementState.ADS || _actionState == ActionState.Fire || _actionState == ActionState.Dash || _actionState == ActionState.Interact)
                         return;
                     break;
                 case MovementState.ADS:
-                    if (_movementState == MovementState.Run)
+                    if (_movementState == MovementState.Run || _actionState == ActionState.Dash || _actionState == ActionState.Interact)
                         return;
                     break;
             }
@@ -79,14 +80,22 @@ public class PlayerController : MonoBehaviour
                 case ActionState.None:
                     break;
                 case ActionState.Fire:
-                    if (_actionState == ActionState.Reload || _movementState == MovementState.Run)
+                    if (_actionState == ActionState.Reload || _movementState == MovementState.Run || _actionState == ActionState.Dash || _actionState == ActionState.Interact)
                         return;
                     break;
                 case ActionState.Reload:
+                    if (_actionState == ActionState.Dash || _actionState == ActionState.Interact)
+                        return;
                     break;
                 case ActionState.Dash:
-                    if (_movementState == MovementState.ADS)
+                    if (_movementState == MovementState.ADS || _actionState == ActionState.Interact)
                         return;
+                    _movementState = MovementState.Jog;
+                    break;
+                case ActionState.Interact:
+                    if (_actionState == ActionState.Dash)
+                        return;
+                    _movementState = MovementState.Jog;
                     break;
             }
             _actionState = value;
@@ -105,6 +114,8 @@ public class PlayerController : MonoBehaviour
         inputMappings.Weapon.Shoot.canceled += _ => inputFire = false;
         inputMappings.Weapon.Aim.started += _ => inputAim = true;
         inputMappings.Weapon.Aim.canceled += _ => inputAim = false;
+        inputMappings.Movement.Dash.performed += _ => Dash();
+        inputMappings.Movement.Interact.performed += _ => Interact();
 
         inputs = GetComponent<StarterAssetsInputs>();
     }
@@ -165,4 +176,8 @@ public class PlayerController : MonoBehaviour
         Vector2 dir = inputMappings.Movement.Move.ReadValue<Vector2>();
         
     }*/
+
+    // TODO: Actually write these methods (maybe in a seperate script?).
+    private void Dash() => throw new System.NotImplementedException("The method \"Dash\" is not yet implemented.");
+    private void Interact() => throw new System.NotImplementedException("The method \"Interact\" is not yet implemented.");
 }
