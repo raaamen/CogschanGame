@@ -54,24 +54,28 @@ public abstract class Gun : MonoBehaviour
     public bool IsReloading => reloadClock > 0;
 
     /// <summary>
-    /// Fire without aiming down sights.
+    /// Fire without aiming down sights. Returns false if unable to fire.
     /// </summary>
-    public virtual void HipFire()
+    /// <param name="hitTransform">The transform the crosshair is currently pointed at.</param>
+    public virtual bool HipFire(Transform hitTransform)
     {
         if (!CanFire)
-            return;
+            return false;
         Ammo -= 1;
         fireClock = FireRate;
+        return true;
     }
     /// <summary>
-    /// Fire while aiming down sights.
+    /// Fire while aiming down sights. Returns false if unable to fire.
     /// </summary>
-    public virtual void ADSFire()
+    /// <param name="hitTransform">The transform the crosshair is currently pointed at.</param>
+    public virtual bool ADSFire(Transform hitTransform)
     {
         if (!CanFire)
-            return;
+            return false;
         Ammo -= 1;
         fireClock = FireRate;
+        return false;
     }
     /// <summary>
     /// Reload the gun.

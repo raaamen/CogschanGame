@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -703,6 +703,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 165013744114904363, guid: 1d4bdcd12ba53499b8b952e18a65ca18, type: 3}
+      propertyPath: damage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 165013744114904363, guid: 1d4bdcd12ba53499b8b952e18a65ca18, type: 3}
+      propertyPath: particle
+      value: 
+      objectReference: {fileID: 9222931191912853214, guid: a0f18980ea1bcc84a9c91285f4980d6c, type: 3}
     - target: {fileID: 165013744114904365, guid: 1d4bdcd12ba53499b8b952e18a65ca18, type: 3}
       propertyPath: m_Name
       value: Gun
@@ -1745,7 +1753,8 @@ MonoBehaviour:
   debugTransform: {fileID: 14623233}
   vfxHitGreen: {fileID: 0}
   vfxHitRed: {fileID: 0}
-  particle: {fileID: 9222931191912853214, guid: a0f18980ea1bcc84a9c91285f4980d6c, type: 3}
+  gun: {fileID: 1984437499}
+  playerController: {fileID: 1731608324}
 --- !u!4 &1731608323 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3893294197879345259, guid: 64dce48905ffd9b4293e595fa6941544, type: 3}

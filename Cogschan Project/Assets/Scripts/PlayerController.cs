@@ -144,19 +144,12 @@ public class PlayerController : MonoBehaviour
         else if (ActState == ActionState.Reload)
             ActState = ActionState.None;
 
-        if (ActState == ActionState.Fire)
-        {
-            if (MoveState == MovementState.ADS)
-                Gun.ADSFire();
-            else
-                Gun.HipFire();
-        }
-
         // Use the input and states to interact with the StarterAssestsInputs and the ThirdPersonShooterController.
         //Debug.Log($"Movement State: {MoveState}, Action State {ActState}, Ammo Count: {Gun.Ammo}|{Gun.ReserveAmmo}");
         inputs.MoveInput(inputMappings.Movement.Move.ReadValue<Vector2>());
         inputs.SprintInput(MoveState == MovementState.Run);
         inputs.AimInput(MoveState == MovementState.ADS);
+        inputs.ShootInput(ActState == ActionState.Fire);
 
     }
 
