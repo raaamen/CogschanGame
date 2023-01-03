@@ -15,6 +15,8 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform vfxHitGreen;
     [SerializeField] private Transform vfxHitRed;
 
+    public GameObject particle;
+
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs starterAssetsInputs;
 
@@ -54,20 +56,26 @@ public class ThirdPersonShooterController : MonoBehaviour
             thirdPersonController.SetSensitivity(normalSensitivity);
             thirdPersonController.SetRotateOnMove(true);
         }
-/*
-        if(starterAssetsInput.shoot)
+
+        if(starterAssetsInputs.shoot)
         {
             if(hitTransform != null)
             {
-                if(hitTransform.GetComponent<BulletTarget>() != null)
+                Hitbox hitbox = hitTransform.GetComponent<Hitbox>();
+                if(hitbox != null)
                 {
-                    Instantiate(vfxHitGreen, transform.position, Quaternion.identity);
+                    Instantiate(particle, hitTransform.position, Quaternion.identity);
+                    //Debug.Log("yes hit!");
+                    hitbox.TakeHit(10);
+
                 } else {
-                    Instantiate(vfxHitRed, transform.position, Quaternion.identity);
+                    //Instantiate(vfxHitRed, transform.position, Quaternion.identity);
+                    Debug.Log("FUCK!");
                 }
             }
+            starterAssetsInputs.shoot = false;
         }
-        */
+       
     
     }
 
