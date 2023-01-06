@@ -15,15 +15,12 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform vfxHitGreen;
     [SerializeField] private Transform vfxHitRed;
     [SerializeField] private Gun gun;
-    [SerializeField] private PlayerController playerController;
 
     private ThirdPersonController thirdPersonController;
-    private StarterAssetsInputs starterAssetsInputs;
 
     private void Awake()
     {
         thirdPersonController = GetComponent<ThirdPersonController>();
-        starterAssetsInputs = GetComponent<StarterAssetsInputs>();
     }
 
     private void Update()
@@ -41,7 +38,7 @@ public class ThirdPersonShooterController : MonoBehaviour
             hitTransform = raycastHit.transform;
         }
 
-        if (starterAssetsInputs.aim)
+        if (PlayerController.Singleton.MoveState == MovementState.ADS)
         {
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
@@ -60,9 +57,9 @@ public class ThirdPersonShooterController : MonoBehaviour
             thirdPersonController.SetRotateOnMove(true);
         }
 
-        if (starterAssetsInputs.shoot)
+        if (PlayerController.Singleton.ActState == ActionState.Fire)
         {
-            if (playerController.MoveState == MovementState.ADS)
+            if (PlayerController.Singleton.MoveState == MovementState.ADS)
                 gun.ADSFire(hitTransform);
             else
                 gun.HipFire(hitTransform);

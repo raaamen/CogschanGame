@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 /// <summary>
 /// Abstract class for all guns.
@@ -23,14 +24,14 @@ public abstract class Gun : MonoBehaviour
     [SerializeField]
     [Tooltip("The amount of time it takes to reload.")]
     protected float ReloadTime;
-    /// <summary>
-    /// The amount of time between shots.
-    /// </summary>
     [SerializeField]
     [Tooltip("The amount of time between shots.")]
-    private float _fireRate;
+    protected float _fireRate;
     private float fireClock;
     private float reloadClock;
+
+
+    private TextMeshProUGUI ammoText;
 
     /// <summary>
     /// The ammo count of the gun.
@@ -41,7 +42,7 @@ public abstract class Gun : MonoBehaviour
     /// </summary>
     public int ReserveAmmo { get; protected set; }
     /// <summary>
-    /// The frequency at which the gun can fire.
+    /// The amount of time between shots.
     /// </summary>
     public float FireRate { get { return _fireRate; } protected set { _fireRate = value; } }
     /// <summary>
@@ -89,17 +90,27 @@ public abstract class Gun : MonoBehaviour
         ReserveAmmo -= ammoReloaded;
     }
 
+    /// <summary>
+    /// Set the initial Ammo and ReserveAmmo counts, as well as ammoText.
+    /// TODO: Move the ammoText to a GUIManager.
+    /// </summary>
     protected virtual void Start()
     {
         Ammo = MaxAmmo;
         ReserveAmmo = MaxReserveAmmo;
+        ammoText = GameObject.FindGameObjectWithTag("AmmoText").GetComponent<TextMeshProUGUI>();
     }
 
+    /// <summary>
+    /// Check if the gun is reloading or able to fire and manage the appropiate timers. Also manages GUI.
+    /// </summary>
     protected virtual void Update()
     {
         if (IsReloading)
             reloadClock -= Time.deltaTime;
         if (!CanFire)
             fireClock -= Time.deltaTime;
+
+        ammoText.text = $"{Ammo}|{ReserveAmmo}";
     }
 }

@@ -205,6 +205,15 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""07db6b94-a435-417e-b87b-a0f570f463cd"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -238,6 +247,17 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard and Mouse"",
                     ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""879b83ac-707e-46ce-bd9a-d83462300255"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -275,6 +295,7 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         m_Weapon_Shoot = m_Weapon.FindAction("Shoot", throwIfNotFound: true);
         m_Weapon_Reload = m_Weapon.FindAction("Reload", throwIfNotFound: true);
         m_Weapon_Aim = m_Weapon.FindAction("Aim", throwIfNotFound: true);
+        m_Weapon_Look = m_Weapon.FindAction("Look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -402,6 +423,7 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
     private readonly InputAction m_Weapon_Shoot;
     private readonly InputAction m_Weapon_Reload;
     private readonly InputAction m_Weapon_Aim;
+    private readonly InputAction m_Weapon_Look;
     public struct WeaponActions
     {
         private @InputMapping m_Wrapper;
@@ -409,6 +431,7 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Weapon_Shoot;
         public InputAction @Reload => m_Wrapper.m_Weapon_Reload;
         public InputAction @Aim => m_Wrapper.m_Weapon_Aim;
+        public InputAction @Look => m_Wrapper.m_Weapon_Look;
         public InputActionMap Get() { return m_Wrapper.m_Weapon; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -427,6 +450,9 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                 @Aim.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
                 @Aim.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
                 @Aim.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
+                @Look.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnLook;
+                @Look.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnLook;
+                @Look.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnLook;
             }
             m_Wrapper.m_WeaponActionsCallbackInterface = instance;
             if (instance != null)
@@ -440,6 +466,9 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
             }
         }
     }
@@ -466,5 +495,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
+        void OnLook(InputAction.CallbackContext context);
     }
 }
