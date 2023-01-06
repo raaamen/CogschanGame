@@ -53,24 +53,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Dash"",
-                    ""type"": ""Button"",
-                    ""id"": ""802a4caf-83a5-4683-bd93-3759e96c2c21"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Interact"",
-                    ""type"": ""Button"",
-                    ""id"": ""5b16144a-ed11-46b9-8e97-644933dd5e65"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -150,28 +132,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                     ""action"": ""Run"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6c914859-3ba4-44e0-827e-d1f33d147be5"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bfd537b0-97bc-46c4-9ffb-bb5ef267d226"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -205,15 +165,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Look"",
-                    ""type"": ""Value"",
-                    ""id"": ""07db6b94-a435-417e-b87b-a0f570f463cd"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -249,17 +200,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""879b83ac-707e-46ce-bd9a-d83462300255"",
-                    ""path"": ""<Mouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Look"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -288,14 +228,11 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         m_Movement_Move = m_Movement.FindAction("Move", throwIfNotFound: true);
         m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
         m_Movement_Run = m_Movement.FindAction("Run", throwIfNotFound: true);
-        m_Movement_Dash = m_Movement.FindAction("Dash", throwIfNotFound: true);
-        m_Movement_Interact = m_Movement.FindAction("Interact", throwIfNotFound: true);
         // Weapon
         m_Weapon = asset.FindActionMap("Weapon", throwIfNotFound: true);
         m_Weapon_Shoot = m_Weapon.FindAction("Shoot", throwIfNotFound: true);
         m_Weapon_Reload = m_Weapon.FindAction("Reload", throwIfNotFound: true);
         m_Weapon_Aim = m_Weapon.FindAction("Aim", throwIfNotFound: true);
-        m_Weapon_Look = m_Weapon.FindAction("Look", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -358,8 +295,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
     private readonly InputAction m_Movement_Move;
     private readonly InputAction m_Movement_Jump;
     private readonly InputAction m_Movement_Run;
-    private readonly InputAction m_Movement_Dash;
-    private readonly InputAction m_Movement_Interact;
     public struct MovementActions
     {
         private @InputMapping m_Wrapper;
@@ -367,8 +302,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Movement_Move;
         public InputAction @Jump => m_Wrapper.m_Movement_Jump;
         public InputAction @Run => m_Wrapper.m_Movement_Run;
-        public InputAction @Dash => m_Wrapper.m_Movement_Dash;
-        public InputAction @Interact => m_Wrapper.m_Movement_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -387,12 +320,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                 @Run.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnRun;
                 @Run.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnRun;
                 @Run.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnRun;
-                @Dash.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnDash;
-                @Dash.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnDash;
-                @Dash.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnDash;
-                @Interact.started -= m_Wrapper.m_MovementActionsCallbackInterface.OnInteract;
-                @Interact.performed -= m_Wrapper.m_MovementActionsCallbackInterface.OnInteract;
-                @Interact.canceled -= m_Wrapper.m_MovementActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_MovementActionsCallbackInterface = instance;
             if (instance != null)
@@ -406,12 +333,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                 @Run.started += instance.OnRun;
                 @Run.performed += instance.OnRun;
                 @Run.canceled += instance.OnRun;
-                @Dash.started += instance.OnDash;
-                @Dash.performed += instance.OnDash;
-                @Dash.canceled += instance.OnDash;
-                @Interact.started += instance.OnInteract;
-                @Interact.performed += instance.OnInteract;
-                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -423,7 +344,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
     private readonly InputAction m_Weapon_Shoot;
     private readonly InputAction m_Weapon_Reload;
     private readonly InputAction m_Weapon_Aim;
-    private readonly InputAction m_Weapon_Look;
     public struct WeaponActions
     {
         private @InputMapping m_Wrapper;
@@ -431,7 +351,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Weapon_Shoot;
         public InputAction @Reload => m_Wrapper.m_Weapon_Reload;
         public InputAction @Aim => m_Wrapper.m_Weapon_Aim;
-        public InputAction @Look => m_Wrapper.m_Weapon_Look;
         public InputActionMap Get() { return m_Wrapper.m_Weapon; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -450,9 +369,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                 @Aim.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
                 @Aim.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
                 @Aim.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnAim;
-                @Look.started -= m_Wrapper.m_WeaponActionsCallbackInterface.OnLook;
-                @Look.performed -= m_Wrapper.m_WeaponActionsCallbackInterface.OnLook;
-                @Look.canceled -= m_Wrapper.m_WeaponActionsCallbackInterface.OnLook;
             }
             m_Wrapper.m_WeaponActionsCallbackInterface = instance;
             if (instance != null)
@@ -466,9 +382,6 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
                 @Aim.started += instance.OnAim;
                 @Aim.performed += instance.OnAim;
                 @Aim.canceled += instance.OnAim;
-                @Look.started += instance.OnLook;
-                @Look.performed += instance.OnLook;
-                @Look.canceled += instance.OnLook;
             }
         }
     }
@@ -487,14 +400,11 @@ public partial class @InputMapping : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnRun(InputAction.CallbackContext context);
-        void OnDash(InputAction.CallbackContext context);
-        void OnInteract(InputAction.CallbackContext context);
     }
     public interface IWeaponActions
     {
         void OnShoot(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
-        void OnLook(InputAction.CallbackContext context);
     }
 }

@@ -105,8 +105,7 @@ namespace StarterAssets
 #endif
         private Animator _animator;
         private CharacterController _controller;
-        // All references to StarterAssetsInputs have been replaced with references to PlayerController to make using the state machine less complex.
-        // private StarterAssetsInputs _input;
+        private StarterAssetsInputs _input;
         private GameObject _mainCamera;
         private bool _rotateOnMove = true;
 
@@ -142,7 +141,7 @@ namespace StarterAssets
 
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            //_input = GetComponent<StarterAssetsInputs>();
+            _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -197,13 +196,13 @@ namespace StarterAssets
         private void CameraRotation()
         {
             // if there is an input and camera position is not fixed
-            if (PlayerController.Singleton.InputLook.sqrMagnitude >= _threshold && !LockCameraPosition)
+            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 //Don't multiply mouse input by Time.deltaTime;
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += PlayerController.Singleton.InputLook.x * deltaTimeMultiplier * Sensitivity;
-                _cinemachineTargetPitch += PlayerController.Singleton.InputLook.y * deltaTimeMultiplier * Sensitivity;
+                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier * Sensitivity;
+                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier * Sensitivity;
             }
 
             // clamp our rotations so our values are limited 360 degrees
@@ -218,19 +217,19 @@ namespace StarterAssets
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = PlayerController.Singleton.MoveState == MovementState.Run ? SprintSpeed : MoveSpeed;
+            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
             // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is no input, set the target speed to 0
-            if (PlayerController.Singleton.InputMove == Vector2.zero) targetSpeed = 0.0f;
+            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
             // a reference to the players current horizontal velocity
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
             float speedOffset = 0.1f;
-            float inputMagnitude = /*_input.analogMovement ? _input.move.magnitude : */1f;
+            float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
             // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
@@ -253,11 +252,11 @@ namespace StarterAssets
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // normalise input direction
-            Vector3 inputDirection = new Vector3(PlayerController.Singleton.InputMove.x, 0.0f, PlayerController.Singleton.InputMove.y).normalized;
+            Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
             // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
             // if there is a move input rotate player when the player is moving
-            if (PlayerController.Singleton.InputMove != Vector2.zero)
+            if (_input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
                                   _mainCamera.transform.eulerAngles.y;
@@ -307,8 +306,16 @@ namespace StarterAssets
                 }
 
                 // Jump
-                if (PlayerController.Singleton.InputJump && _jumpTimeoutDelta <= 0.0f)
+                if (_input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
+                    // The following is a modificaiton to the original starting assets file to prevent jumping during aiming.
+                    PlayerController controller = GetComponent<PlayerController>();
+                    if (controller != null && controller.MoveState == MovementState.ADS)
+                    {
+                        _input.jump = false;
+                        return;
+                    }
+                    // End of modification.
 
                     // the square root of H * -2 * G = how much velocity needed to reach desired height
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
@@ -346,7 +353,7 @@ namespace StarterAssets
                 }
 
                 // if we are not grounded, do not jump
-                PlayerController.Singleton.InputJump = false;
+                _input.jump = false;
             }
 
             // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
