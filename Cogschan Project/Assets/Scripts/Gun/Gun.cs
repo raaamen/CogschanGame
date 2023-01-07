@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 
 /// <summary>
 /// Abstract class for all guns.
@@ -24,14 +23,14 @@ public abstract class Gun : MonoBehaviour
     [SerializeField]
     [Tooltip("The amount of time it takes to reload.")]
     protected float ReloadTime;
+    /// <summary>
+    /// The amount of time between shots.
+    /// </summary>
     [SerializeField]
     [Tooltip("The amount of time between shots.")]
-    protected float _fireRate;
+    private float _fireRate;
     private float fireClock;
     private float reloadClock;
-
-
-    private TextMeshProUGUI ammoText;
 
     /// <summary>
     /// The ammo count of the gun.
@@ -42,7 +41,7 @@ public abstract class Gun : MonoBehaviour
     /// </summary>
     public int ReserveAmmo { get; protected set; }
     /// <summary>
-    /// The amount of time between shots.
+    /// The frequency at which the gun can fire.
     /// </summary>
     public float FireRate { get { return _fireRate; } protected set { _fireRate = value; } }
     /// <summary>
@@ -55,28 +54,24 @@ public abstract class Gun : MonoBehaviour
     public bool IsReloading => reloadClock > 0;
 
     /// <summary>
-    /// Fire without aiming down sights. Returns false if unable to fire.
+    /// Fire without aiming down sights.
     /// </summary>
-    /// <param name="hitTransform">The transform the crosshair is currently pointed at.</param>
-    public virtual bool HipFire(Transform hitTransform)
+    public virtual void HipFire()
     {
         if (!CanFire)
-            return false;
+            return;
         Ammo -= 1;
         fireClock = FireRate;
-        return true;
     }
     /// <summary>
-    /// Fire while aiming down sights. Returns false if unable to fire.
+    /// Fire while aiming down sights.
     /// </summary>
-    /// <param name="hitTransform">The transform the crosshair is currently pointed at.</param>
-    public virtual bool ADSFire(Transform hitTransform)
+    public virtual void ADSFire()
     {
         if (!CanFire)
-            return false;
+            return;
         Ammo -= 1;
         fireClock = FireRate;
-        return false;
     }
     /// <summary>
     /// Reload the gun.
@@ -90,27 +85,17 @@ public abstract class Gun : MonoBehaviour
         ReserveAmmo -= ammoReloaded;
     }
 
-    /// <summary>
-    /// Set the initial Ammo and ReserveAmmo counts, as well as ammoText.
-    /// TODO: Move the ammoText to a GUIManager.
-    /// </summary>
     protected virtual void Start()
     {
         Ammo = MaxAmmo;
         ReserveAmmo = MaxReserveAmmo;
-        ammoText = GameObject.FindGameObjectWithTag("AmmoText").GetComponent<TextMeshProUGUI>();
     }
 
-    /// <summary>
-    /// Check if the gun is reloading or able to fire and manage the appropiate timers. Also manages GUI.
-    /// </summary>
     protected virtual void Update()
     {
         if (IsReloading)
             reloadClock -= Time.deltaTime;
         if (!CanFire)
             fireClock -= Time.deltaTime;
-
-        ammoText.text = $"{Ammo}|{ReserveAmmo}";
     }
 }

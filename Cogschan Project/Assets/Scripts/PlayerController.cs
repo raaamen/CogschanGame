@@ -23,13 +23,10 @@ public enum ActionState
     Fire,
     Reload,
     Dash,
-    Interact,
 }
 
 public class PlayerController : MonoBehaviour
 {
-    private static PlayerController s_singleton;
-
     /// <summary>
     /// Don't modify directly. Use <see cref="MoveState"/> instead.
     /// </summary>
@@ -38,49 +35,19 @@ public class PlayerController : MonoBehaviour
     /// Don't modify directly. Use <see cref="ActState"/> instead.
     /// </summary>
     private ActionState _actionState;
+    private Rigidbody rb;
+    private Collider hitbox;
     private InputMapping inputMappings;
 
-    // The booleans that determine running, firing, and aiming based on inputs.
     private bool inputRun = false;
     private bool inputFire = false;
     private bool inputAim = false;
 
-    // The gun that the player is carrying.
-    private Gun gun;
+    private StarterAssetsInputs inputs;
 
-    /// <summary>
-    /// The Vector2 that determines the movement direction based on input.
-    /// </summary>
-    public Vector2 InputMove { get; private set; }
-    /// <summary>
-    /// The Vector2 that determines the change in camera angle based on input.
-    /// </summary>
-    public Vector2 InputLook { get; private set; }
-    /// <summary>
-    /// The bool that determines if the player will jump based on input.
-    /// </summary>
-    [HideInInspector]
-    public bool InputJump;
+    public Gun Gun;
 
-    /// <summary>
-    /// The singleton instance of the <see cref="PlayerController"/>.
-    /// </summary>
-    public static PlayerController Singleton
-    {
-        get { return s_singleton; }
-        private set
-        {
-            if (s_singleton == null)
-                s_singleton = value;
-            else if (s_singleton != value)
-                Destroy(value);
-        }
-    }
-
-    /// <summary>
-    /// The movement state of the player. Changes based on player inputs and the state machine.
-    /// </summary>
-    /// <remarks> Jump is not part of the movement states</remarks>
+    // Jump is not part of movement states.
     public MovementState MoveState
     {
         get { return _movementState; }
@@ -91,23 +58,17 @@ public class PlayerController : MonoBehaviour
                 case MovementState.Jog:
                     break;
                 case MovementState.Run:
-                    if (_movementState == MovementState.ADS || _actionState == ActionState.Fire
-                        || _actionState == ActionState.Dash || _actionState == ActionState.Interact)
+                    if (_movementState == MovementState.ADS || _actionState == ActionState.Fire)
                         return;
                     break;
                 case MovementState.ADS:
-                    if (_movementState == MovementState.Run || _actionState == ActionState.Dash
-                        || _actionState == ActionState.Interact)
+                    if (_movementState == MovementState.Run)
                         return;
                     break;
             }
             _movementState = value;
         }
     }
-
-    /// <summary>
-    /// The action state of the player. Changes based on player inputs and the state machine.
-    /// </summary>
     public ActionState ActState
     {
         get { return _actionState; }
@@ -118,52 +79,38 @@ public class PlayerController : MonoBehaviour
                 case ActionState.None:
                     break;
                 case ActionState.Fire:
-                    if (_actionState == ActionState.Reload || _movementState == MovementState.Run
-                        || _actionState == ActionState.Dash || _actionState == ActionState.Interact)
+                    if (_actionState == ActionState.Reload || _movementState == MovementState.Run)
                         return;
                     break;
                 case ActionState.Reload:
-                    if (_actionState == ActionState.Dash || _actionState == ActionState.Interact)
-                        return;
                     break;
                 case ActionState.Dash:
-                    if (_movementState == MovementState.ADS || _actionState == ActionState.Interact)
+                    if (_movementState == MovementState.ADS)
                         return;
-                    _movementState = MovementState.Jog;
-                    break;
-                case ActionState.Interact:
-                    if (_actionState == ActionState.Dash)
-                        return;
-                    _movementState = MovementState.Jog;
                     break;
             }
             _actionState = value;
         }
     }
 
-    // Initialize the singleton and gun and set up the input map.
-    private void Awake()
+    void Awake()
     {
-        Singleton = this;
-        gun = GetComponentInChildren<Gun>();
-
         inputMappings = new InputMapping();
         inputMappings.Enable();
+
         inputMappings.Movement.Run.started += _ => inputRun = true;
         inputMappings.Movement.Run.canceled += _ => inputRun = false;
-        inputMappings.Weapon.Reload.performed += _ => gun.Reload();
+        inputMappings.Weapon.Reload.performed += _ => Gun.Reload();
         inputMappings.Weapon.Shoot.started += _ => inputFire = true;
         inputMappings.Weapon.Shoot.canceled += _ => inputFire = false;
         inputMappings.Weapon.Aim.started += _ => inputAim = true;
         inputMappings.Weapon.Aim.canceled += _ => inputAim = false;
-        inputMappings.Movement.Jump.started += _ => { if (!inputAim) { InputJump = true; } };
-        inputMappings.Movement.Jump.canceled += _ => InputJump = false;
-        inputMappings.Movement.Dash.performed += _ => Dash();
-        inputMappings.Movement.Interact.performed += _ => Interact();
+
+        inputs = GetComponent<StarterAssetsInputs>();
     }
 
-    // Use the inputs to set the action states and other values.
-    private void Update()
+    // TODO: make this seperate methods?
+    void Update()
     {
         // Set the movement and action states.
         if (inputRun)
@@ -177,42 +124,45 @@ public class PlayerController : MonoBehaviour
             ActState = ActionState.None;
 
         if (inputAim)
-        {
             MoveState = MovementState.ADS;
-            InputJump = false;
-        }
         else if (MoveState == MovementState.ADS)
             MoveState = MovementState.Jog;
 
-        if (gun.IsReloading)
+        if (Gun.IsReloading)
             ActState = ActionState.Reload;
         else if (ActState == ActionState.Reload)
             ActState = ActionState.None;
 
-        InputMove = inputMappings.Movement.Move.ReadValue<Vector2>();
-        InputLook = inputMappings.Weapon.Look.ReadValue<Vector2>();
-        InputLook = new Vector2(InputLook.x, -InputLook.y);
+        if (ActState == ActionState.Fire)
+        {
+            if (MoveState == MovementState.ADS)
+                Gun.ADSFire();
+            else
+                Gun.HipFire();
+        }
+
+        // Use the input and states to interact with the StarterAssestsInputs and the ThirdPersonShooterController.
+        //Debug.Log($"Movement State: {MoveState}, Action State {ActState}, Ammo Count: {Gun.Ammo}|{Gun.ReserveAmmo}");
+        inputs.MoveInput(inputMappings.Movement.Move.ReadValue<Vector2>());
+        inputs.SprintInput(MoveState == MovementState.Run);
+        inputs.AimInput(MoveState == MovementState.ADS);
+
     }
 
-    // Enable input mappings.
     private void OnEnable()
     {
         inputMappings.Enable();
     }
 
-    // Disable input mappings.
     private void OnDisable()
     {
         inputMappings.Disable();
     }
 
-    // Lock the cursor upon focusing the application.
-    private void OnApplicationFocus(bool hasFocus)
+    /* Wasn't really sure why this is here
+    private void FixedUpdate()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    // TODO: Actually write these methods (maybe in a seperate script?).
-    private void Dash() => throw new System.NotImplementedException("The method \"Dash\" is not yet implemented.");
-    private void Interact() => throw new System.NotImplementedException("The method \"Interact\" is not yet implemented.");
+        Vector2 dir = inputMappings.Movement.Move.ReadValue<Vector2>();
+        
+    }*/
 }
