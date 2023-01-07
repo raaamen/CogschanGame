@@ -76,7 +76,7 @@ public abstract class Gun : MonoBehaviour
             return false;
         Ammo -= 1;
         fireClock = FireRate;
-        return false;
+        return true;
     }
     /// <summary>
     /// Reload the gun.
