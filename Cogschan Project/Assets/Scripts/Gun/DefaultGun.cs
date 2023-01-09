@@ -39,14 +39,14 @@ public class DefaultGun : Gun
         {
             Instantiate(critParticle, hitTransform.position, Quaternion.identity);
             Debug.Log("IT'S A CRIT!");
-            hitbox.TakeHit(1);
+            hitbox.TakeHit(damage);
 
         }
         else if (hitbox != null && hitbox.multiplier < 5)
         {
             Instantiate(particle, hitTransform.position, Quaternion.identity);
             Debug.Log("Normal ass hit...");
-            hitbox.TakeHit(1);
+            hitbox.TakeHit(damage);
         }
 
         else
