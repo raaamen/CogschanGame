@@ -16,6 +16,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform vfxHitRed;
 
     public GameObject particle;
+    public GameObject critParticle;
 
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs starterAssetsInputs;
@@ -62,13 +63,21 @@ public class ThirdPersonShooterController : MonoBehaviour
             if(hitTransform != null)
             {
                 Hitbox hitbox = hitTransform.GetComponent<Hitbox>();
-                if(hitbox != null)
+                if(hitbox != null && hitbox.multiplier >= 5)
                 {
-                    Instantiate(particle, hitTransform.position, Quaternion.identity);
-                    //Debug.Log("yes hit!");
-                    hitbox.TakeHit(10);
+                    Instantiate(critParticle, hitTransform.position, Quaternion.identity);
+                    Debug.Log("IT'S A CRIT!");
+                    hitbox.TakeHit(1);
+                
+                }
+                else if(hitbox != null && hitbox.multiplier < 5)
+                {
+                Instantiate(particle, hitTransform.position, Quaternion.identity);
+                    Debug.Log("Normal ass hit...");
+                    hitbox.TakeHit(1);
+                    }
 
-                } else {
+                 else {
                     //Instantiate(vfxHitRed, transform.position, Quaternion.identity);
                     Debug.Log("FUCK!");
                 }
