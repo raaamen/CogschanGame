@@ -60,9 +60,15 @@ public class ThirdPersonShooterController : MonoBehaviour
         if (PlayerController.Singleton.ActState == ActionState.Fire)
         {
             if (PlayerController.Singleton.MoveState == MovementState.ADS)
+            {
                 gun.ADSFire(hitTransform);
+                //Debug.Log("Firing scoped in");
+            }
             else
+            {
                 gun.HipFire(hitTransform);
+                //Debug.Log("Firing from hip");
+            }
         }
 
 
