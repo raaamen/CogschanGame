@@ -14,9 +14,6 @@ public class PlayerWeapon : MonoBehaviour
     [SerializeField] private Transform debugTransform;
     [SerializeField] private Gun gun;
 
-    public GameObject particle;
-    public GameObject critParticle;
-
     private PlayerMovement thirdPersonController;
 
     private void Awake()
@@ -70,33 +67,6 @@ public class PlayerWeapon : MonoBehaviour
                 gun.HipFire(hitTransform);
                 //Debug.Log("Firing from hip");
             }
-        }
-
-        if(starterAssetsInputs.shoot)
-        {
-            if(hitTransform != null)
-            {
-                Hitbox hitbox = hitTransform.GetComponent<Hitbox>();
-                if(hitbox != null && hitbox.multiplier >= 5)
-                {
-                    Instantiate(critParticle, hitTransform.position, Quaternion.identity);
-                    Debug.Log("IT'S A CRIT!");
-                    hitbox.TakeHit(1);
-                
-                }
-                else if(hitbox != null && hitbox.multiplier < 5)
-                {
-                Instantiate(particle, hitTransform.position, Quaternion.identity);
-                    Debug.Log("Normal ass hit...");
-                    hitbox.TakeHit(1);
-                    }
-
-                 else {
-                    //Instantiate(vfxHitRed, transform.position, Quaternion.identity);
-                    Debug.Log("FUCK!");
-                }
-            }
-            starterAssetsInputs.shoot = false;
         }
     }
 }
